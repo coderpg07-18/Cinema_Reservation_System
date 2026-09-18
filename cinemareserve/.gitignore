@@ -1,0 +1,24 @@
+# Build output
+target/
+*.class
+
+# Local database files (never commit real or dev data)
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.db-journal
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

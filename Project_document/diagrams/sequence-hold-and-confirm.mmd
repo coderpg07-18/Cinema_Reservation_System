@@ -1,0 +1,35 @@
+sequenceDiagram
+    actor User
+    participant CLI as Main (CLI)
+    participant RS as ReservationService
+    participant DAO as ReservationDao
+    participant DB as SQLite
+
+    User->>CLI: bookSeats(showtimeId, seatIds)
+    CLI->>RS: holdSeats(actor, showtimeId, seatIds)
+    RS->>DB: BEGIN IMMEDIATE
+    RS->>DAO: expireStaleHolds()
+    RS->>DAO: findBlockedSeatIds(showtimeId)
+    DAO-->>RS: blocked seat ids
+    alt any requested seat already blocked
+        RS-->>CLI: throw SeatUnavailableException
+    else all requested seats free
+        RS->>DAO: insertReservation(HELD, holdExpiresAt)
+        RS->>DAO: insertReservedSeats(seatIds)
+        Note over DAO,DB: UNIQUE(showtime_id, seat_id) is the<br/>real double-booking guarantee
+        DB-->>RS: OK (or SQLITE_CONSTRAINT if raced)
+        RS->>DB: COMMIT
+        RS-->>CLI: Reservation(HELD)
+    end
+    CLI-->>User: booking reference + expiry
+
+    User->>CLI: confirmReservation(reservationId)
+    CLI->>RS: confirmReservation(actor, reservationId)
+    RS->>DB: BEGIN IMMEDIATE
+    RS->>DAO: expireStaleHolds()
+    RS->>DAO: findById(reservationId)
+    DAO-->>RS: Reservation(HELD)
+    RS->>DAO: updateStatus(CONFIRMED)
+    RS->>DB: COMMIT
+    RS-->>CLI: Reservation(CONFIRMED)
+    CLI-->>User: confirmation

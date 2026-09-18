@@ -1,0 +1,13 @@
+graph TB
+    CLI["CLI Layer<br/>(Main, AppContext)"]
+    SVC["Service Layer<br/>(AuthService, MovieService, VenueService,<br/>SchedulingService, ReservationService, ReportingService)"]
+    DAO["DAO Layer<br/>(UserDao, MovieDao, ..., ReservationDao)"]
+    DB[("SQLite database<br/>cinemareserve.db")]
+    SEC["Security<br/>(PasswordHasher / BCrypt)"]
+    EXC["Exceptions<br/>(custom business exceptions)"]
+
+    CLI --> SVC
+    SVC --> DAO
+    SVC --> SEC
+    SVC --> EXC
+    DAO --> DB

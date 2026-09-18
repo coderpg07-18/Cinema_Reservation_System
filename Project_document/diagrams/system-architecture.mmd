@@ -1,0 +1,58 @@
+graph TD
+    subgraph "Presentation"
+        CLI[CLI: Main.java]
+    end
+    subgraph "Application / Service Layer"
+        AUTH[AuthService]
+        MOVIE[MovieService]
+        VENUE[VenueService]
+        SCHED[SchedulingService]
+        RES[ReservationService]
+        REPORT[ReportingService]
+        GUARD[AuthorizationGuard]
+    end
+    subgraph "Data Access Layer"
+        UDAO[UserDao] 
+        MDAO[MovieDao]
+        VDAO["TheatreDao / ScreenDao / SeatDao"]
+        SDAO[ShowtimeDao]
+        RDAO[ReservationDao]
+    end
+    subgraph "Cross-cutting"
+        SEC[PasswordHasher - BCrypt]
+        VAL[Validator]
+        EXC["Custom Exceptions"]
+    end
+    DB[("SQLite File<br/>data/cinemareserve.db")]
+
+    CLI --> AUTH
+    CLI --> MOVIE
+    CLI --> VENUE
+    CLI --> SCHED
+    CLI --> RES
+    CLI --> REPORT
+
+    AUTH --> UDAO
+    AUTH --> SEC
+    MOVIE --> MDAO
+    VENUE --> VDAO
+    SCHED --> SDAO
+    RES --> RDAO
+    RES --> SDAO
+    REPORT --> DB
+
+    AUTH --> GUARD
+    MOVIE --> GUARD
+    VENUE --> GUARD
+    SCHED --> GUARD
+
+    UDAO --> DB
+    MDAO --> DB
+    VDAO --> DB
+    SDAO --> DB
+    RDAO --> DB
+
+    MOVIE --> VAL
+    RES --> VAL
+    RES --> EXC
+    SCHED --> EXC

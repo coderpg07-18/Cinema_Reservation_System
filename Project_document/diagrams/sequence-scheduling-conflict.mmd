@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor Admin
+    participant CLI as Main (CLI)
+    participant SS as SchedulingService
+    participant SDAO as ShowtimeDao
+    participant DB as SQLite
+
+    Admin->>CLI: createShowtime(movieId, screenId, start, end, price)
+    CLI->>SS: createShowtime(actor, ...)
+    SS->>SS: validate admin role, start < end
+    SS->>DB: BEGIN IMMEDIATE
+    SS->>SDAO: findOverlapping(screenId, start, end)
+    Note over SDAO: WHERE screen_id=? AND start_time < end AND start < end_time
+    SDAO-->>SS: [] or [conflicting showtime]
+    alt overlap found
+        SS->>DB: ROLLBACK
+        SS-->>CLI: throw ScheduleConflictException
+    else no overlap
+        SS->>SDAO: insert(showtime)
+        SS->>DB: COMMIT
+        SS-->>CLI: Showtime
+    end
+    CLI-->>Admin: success or conflict message

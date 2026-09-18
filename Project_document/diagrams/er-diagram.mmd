@@ -1,0 +1,77 @@
+erDiagram
+    USERS ||--o{ RESERVATIONS : places
+    GENRES ||--o{ MOVIES : categorizes
+    MOVIES ||--o{ SHOWTIMES : "screened as"
+    THEATRES ||--o{ SCREENS : contains
+    SCREENS ||--o{ SEATS : contains
+    SCREENS ||--o{ SHOWTIMES : hosts
+    SHOWTIMES ||--o{ RESERVATIONS : "booked for"
+    RESERVATIONS ||--o{ RESERVED_SEATS : includes
+    SEATS ||--o{ RESERVED_SEATS : "occupied by"
+    SHOWTIMES ||--o{ RESERVED_SEATS : "seat state for"
+
+    USERS {
+        int id PK
+        string username UK
+        string email UK
+        string password_hash
+        string role
+        bool active
+    }
+    GENRES {
+        int id PK
+        string name UK
+    }
+    MOVIES {
+        int id PK
+        string title
+        int duration_mins
+        int genre_id FK
+        string language
+        string status
+    }
+    THEATRES {
+        int id PK
+        string name
+        string location
+        string status
+    }
+    SCREENS {
+        int id PK
+        int theatre_id FK
+        string screen_name
+        int capacity
+        string status
+    }
+    SEATS {
+        int id PK
+        int screen_id FK
+        string seat_row
+        int seat_number
+        string seat_type
+    }
+    SHOWTIMES {
+        int id PK
+        int movie_id FK
+        int screen_id FK
+        datetime start_time
+        datetime end_time
+        real base_price
+        string status
+    }
+    RESERVATIONS {
+        int id PK
+        string booking_reference UK
+        int user_id FK
+        int showtime_id FK
+        string status
+        real total_amount
+        datetime hold_expires_at
+    }
+    RESERVED_SEATS {
+        int id PK
+        int reservation_id FK
+        int showtime_id FK
+        int seat_id FK
+        real price
+    }

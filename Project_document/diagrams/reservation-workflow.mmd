@@ -1,0 +1,19 @@
+stateDiagram-v2
+    [*] --> HELD: holdSeats() -- seat rows inserted,\nUNIQUE(showtime_id, seat_id) enforced
+    HELD --> CONFIRMED: confirmReservation()\n(same user, before hold expires)
+    HELD --> EXPIRED: hold_expires_at passed\n(swept by expireStaleHolds())
+    HELD --> CANCELLED: cancelReservation()\n(any time before showtime)
+    CONFIRMED --> CANCELLED: cancelReservation()\n(only if >= 60 min before showtime)
+    EXPIRED --> [*]
+    CANCELLED --> [*]
+
+    note right of HELD
+        Seat is blocked (shown as H in the seat map)
+        but not yet paid for. Expires after
+        ReservationService.HOLD_DURATION_MINUTES (10 min).
+    end note
+
+    note right of CONFIRMED
+        Seat is shown as B (booked) in the seat map.
+        Counted in revenue/occupancy reports.
+    end note

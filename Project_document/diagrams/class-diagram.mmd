@@ -1,0 +1,80 @@
+classDiagram
+    class User {
+        -Long id
+        -String username
+        -String email
+        -String passwordHash
+        -Role role
+        -boolean active
+        +isAdmin() boolean
+    }
+    class Movie {
+        -Long id
+        -String title
+        -int durationMins
+        -Long genreId
+        -MovieStatus status
+    }
+    class Showtime {
+        -Long id
+        -Long movieId
+        -Long screenId
+        -LocalDateTime startTime
+        -LocalDateTime endTime
+        -double basePrice
+        -ShowtimeStatus status
+    }
+    class Reservation {
+        -Long id
+        -String bookingReference
+        -Long userId
+        -Long showtimeId
+        -ReservationStatus status
+        -double totalAmount
+        -LocalDateTime holdExpiresAt
+        -List~ReservedSeat~ seats
+    }
+    class ReservedSeat {
+        -Long seatId
+        -Long showtimeId
+        -double price
+    }
+    class Seat {
+        -Long id
+        -Long screenId
+        -String seatRow
+        -int seatNumber
+        -SeatType seatType
+        +getLabel() String
+    }
+
+    class AuthService {
+        +register(username, email, password) User
+        +login(username, password) User
+    }
+    class SchedulingService {
+        +createShowtime(actor, movieId, screenId, start, end, price) Showtime
+    }
+    class ReservationService {
+        +holdSeats(actor, showtimeId, seatIds) Reservation
+        +confirmReservation(actor, reservationId) Reservation
+        +cancelReservation(actor, reservationId) Reservation
+        +getSeatMap(showtimeId) List~SeatAvailabilityView~
+    }
+    class ReportingService {
+        +summary(actor) SummaryReport
+        +revenueByMovie(actor) List~MovieRevenueRow~
+        +screenUtilization(actor) List~ScreenUtilizationRow~
+    }
+
+    class ReservationDao
+    class ShowtimeDao
+    class UserDao
+
+    AuthService --> UserDao
+    SchedulingService --> ShowtimeDao
+    ReservationService --> ReservationDao
+    ReservationService --> ShowtimeDao
+    Reservation "1" *-- "many" ReservedSeat
+    ReservedSeat --> Seat
+    Showtime --> Movie
