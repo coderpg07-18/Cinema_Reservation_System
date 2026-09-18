@@ -31,10 +31,10 @@ See [statement.md](statement.md) for the full academic problem statement.
 - Centralized, friendly error handling -- no stack traces ever reach the user
 
 ## Functional Requirements
-See [docs/report/04-functional-requirements.md](docs/report/04-functional-requirements.md).
+See [Project_document/report/04-functional-requirements.md](Project_document/report/04-functional-requirements.md).
 
 ## Non-Functional Requirements
-See [docs/report/05-non-functional-requirements.md](docs/report/05-non-functional-requirements.md).
+See [Project_document/report/05-non-functional-requirements.md](Project_document/report/05-non-functional-requirements.md).
 
 ## Architecture
 
@@ -50,7 +50,7 @@ SQLite database (data/cinemareserve.db)
 
 Domain classes are plain Java objects, not JPA entities -- there is no ORM in this
 project by design (see "Technology Stack" below for why). See
-[docs/diagrams/system-architecture.mmd](docs/diagrams/system-architecture.mmd) for the
+[Project_document/diagrams/system-architecture.mmd](Project_document/diagrams/system-architecture.mmd) for the
 full component diagram.
 
 ## Technology Stack
@@ -104,14 +104,14 @@ and `org/sqlite/native/Mac/...` entries (`unzip -l lib/sqlite-jdbc.jar | grep na
 before assuming it will work cross-platform.
 
 ## System Workflow
-See the sequence diagrams in `docs/diagrams/`:
+See the sequence diagrams in `Project_document/diagrams/`:
 - `sequence-hold-and-confirm.mmd` -- seat hold -> confirm
 - `sequence-scheduling-conflict.mmd` -- admin showtime creation with conflict rejection
 - `reservation-workflow.mmd` -- the reservation state machine (HELD/CONFIRMED/CANCELLED/EXPIRED)
 
 ## Database Design
 Full schema: [database/schema.sql](database/schema.sql). ER diagram:
-[docs/diagrams/er-diagram.mmd](docs/diagrams/er-diagram.mmd).
+[Project_document/diagrams/er-diagram.mmd](Project_document/diagrams/er-diagram.mmd).
 
 The key design decision: a showtime-specific seat's "booked" state lives in the
 `reserved_seats` table, joined through `reservations`, **not** as a status column
@@ -173,7 +173,7 @@ only their BCrypt hashes are ever stored in the database.
 This runs the full JUnit 5 suite (36 tests) and writes the results to
 [test_run.txt](test_run.txt), including five repetitions of a genuine 12-thread
 concurrency test proving the double-booking guarantee. See
-[docs/report/12-testing-approach.md](docs/report/12-testing-approach.md) for what
+[Project_document/report/12-testing-approach.md](Project_document/report/12-testing-approach.md) for what
 each test class covers.
 
 ## Troubleshooting
@@ -211,7 +211,7 @@ a stack trace.
 
 ## Screenshots
 This is a CLI application. See
-[docs/report/11-screenshots.md](docs/report/11-screenshots.md) for the exact list of
+[Project_document/report/11-screenshots.md](Project_document/report/11-screenshots.md) for the exact list of
 terminal screenshots to capture for the submission (login, booking flow, a rejected
 double-booking, a rejected scheduling conflict, admin reports, and the test run).
 
@@ -229,7 +229,7 @@ cinemareserve/
 │   └── cli/           console UI (Main, AppContext, SeedData)
 ├── src/test/java/com/cinemareserve/   JUnit 5 tests (service + concurrency)
 ├── database/schema.sql
-├── docs/
+├── Project_document/
 │   ├── diagrams/      Mermaid source for all UML/ER/workflow diagrams
 │   └── report/        project report source, section by section
 ├── scripts/           build.sh, run.sh, seed.sh, test.sh, reset-db.sh
